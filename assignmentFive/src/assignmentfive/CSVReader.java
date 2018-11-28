@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Various functions to interpolate data from a CSV file
  */
 package assignmentfive;
 import java.io.*;
@@ -12,7 +10,14 @@ import java.util.Scanner;
  * @author jfuqua390
  */
 public class CSVReader {
-        public static int numberOfRows(String filePath) throws FileNotFoundException {
+
+    /**
+     * Function to count the number of rows
+     * @param filePath
+     * @return integer amount of total rows
+     * @throws FileNotFoundException
+     */
+    public static int numberOfRows(String filePath) throws FileNotFoundException {
         Scanner in = new Scanner(new File(filePath));
         int totalRows = 0;
         while(in.hasNextLine()){
@@ -23,23 +28,14 @@ public class CSVReader {
         return totalRows;
     }
         
-        public static int numberOfFields(String filePath) throws FileNotFoundException {
-           Scanner scan = new Scanner(new File(filePath));
-           scan.useDelimiter(",");
-           int total = 0;
-           //counts number of fields but doesn't include first of each row
-           while(scan.hasNext()) {
-               scan.next();
-               total ++;
-           }
-           //get total number of rows so we can add to total fields
-           int rows = numberOfRows(filePath);
-           //subtract one to eliminate some double counting (i.e. first field gets counted twice)
-           total += rows - 1;
-           return total;
-        }
-        
-        public static int numberOfFieldsInRow(int row, String filePath) throws FileNotFoundException {
+    /**
+     * Returns the number of fields of a given row
+     * @param row Row to count fields
+     * @param filePath File path of the csv
+     * @return the number of fields for a given row
+     * @throws FileNotFoundException
+     */
+    public static int numberOfFieldsInRow(int row, String filePath) throws FileNotFoundException {
            Scanner scan = new Scanner(new File(filePath));
            int total = 0;
            int r = 1;
@@ -57,7 +53,15 @@ public class CSVReader {
            return total;
         }
         
-        public static String getField(int row, int col, String filePath) throws FileNotFoundException {
+    /**
+     * Function to return a field of given row and column
+     * @param row Row of field
+     * @param col Column of Field
+     * @param filePath File path of the csv
+     * @return the string of what the field contains
+     * @throws FileNotFoundException
+     */
+    public static String getField(int row, int col, String filePath) throws FileNotFoundException {
             String field = "";
             Scanner in = new Scanner(new File(filePath));
             int r = 1;
@@ -74,4 +78,77 @@ public class CSVReader {
             }
             return field;
         }
+    
+    /**
+     * Function to get the sum of a column's data
+     * @param col column wanted to analyze
+     * @param filePath file path of CSV
+     * @return double sum of the values within the column
+     * @throws FileNotFoundException
+     */
+    public static double getSumOfCol(int col, String filePath) throws FileNotFoundException {
+        Scanner in = new Scanner(new File(filePath));
+        double total = 0;
+        while(in.hasNextLine()) {
+            String InputLine = in.nextLine();
+            String[] arr = InputLine.split(",");
+            total += Double.parseDouble(arr[col]);
+        }
+        return total;
+    }
+    
+    /**
+     * Function to get the average of a column's data
+     * @param col column wanted to analyze
+     * @param filePath file path of CSV
+     * @return double average of the values within the column
+     * @throws FileNotFoundException
+     */
+    public static double getAverageOfCol(int col, String filePath) throws FileNotFoundException {
+        return getSumOfCol(col, filePath) / numberOfRows(filePath);     
+    }
+    
+    /**
+     * Function to find the maximum value of given column
+     * @param col column to analyze
+     * @param filePath file path to the CSV
+     * @return double value of max within a column
+     * @throws FileNotFoundException
+     */
+    public static double getMaxOfCol(int col, String filePath) throws FileNotFoundException {
+        Scanner in = new Scanner(new File(filePath));
+        double max = 0;
+        while(in.hasNextLine()) {
+            String InputLine = in.nextLine();
+            String[] arr = InputLine.split(",");
+            double number = Double.parseDouble(arr[col]);
+            if(number >= max) {
+                max = number;
+            }
+        }
+        return max;
+    }
+    
+      /**
+     * Function to find the minimum value of given column
+     * @param col column to analyze
+     * @param filePath file path to the CSV
+     * @return double value of min within a column
+     * @throws FileNotFoundException
+     */
+    public static double getMinOfCol(int col, String filePath) throws FileNotFoundException {
+        Scanner in = new Scanner(new File(filePath));
+        double min = 0;
+        int timesRan = 0;
+        while(in.hasNextLine()) {
+            String InputLine = in.nextLine();
+            String[] arr = InputLine.split(",");
+            double number = Double.parseDouble(arr[col]);
+            if(number <= min || timesRan == 0) {
+                min = number;
+            }
+            timesRan++;
+        }
+        return min;
+    }
 }
